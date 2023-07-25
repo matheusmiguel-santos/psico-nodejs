@@ -270,6 +270,21 @@ app.post('/register_usuario', async (req, res) => {
 });
 
 
+app.delete('/deleteAllUsers', (req, res) => {
+  const query = 'DELETE FROM login_register';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.send({ success: false, message: 'Falha ao excluir usuários: ' + err.message });
+    }
+
+    if (result.affectedRows > 0) {
+      res.send({ success: true, message: `${result.affectedRows} usuário(s) foram excluídos.` });
+    } else {
+      res.send({ success: false, message: 'Não há usuários para excluir.' });
+    }
+  });
+});
 
 
 app.delete('/deleteAll', (req, res) => {
