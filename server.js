@@ -231,12 +231,12 @@ app.post('/login', (req, res) => {
   db.query(query, [usuario], (err, results) => {
     if (err) {
       console.log('Erro na consulta do banco de dados:', err);
-      return res.send({ success: false, message: 'User not found' });
+      return res.status(500).json({ success: false, message: 'Database query error' });
     }
 
     if (results.length === 0) {
       console.log('Nenhum usuário encontrado com o nome de usuário fornecido');
-      return res.send({ success: false, message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     const user = results[0];
@@ -244,19 +244,19 @@ app.post('/login', (req, res) => {
     const isMatch = bcrypt.compareSync(senha, user.senha);
     if (!isMatch) {
       console.log('Senha fornecida não corresponde à senha do usuário no banco de dados');
-      return res.send({ success: false, message: 'Wrong password' });
+      return res.status(401).json({ success: false, message: 'Wrong password' });
     }
 
     const token = jwt.sign({ id: user.id, role: user.acesso }, process.env.JWT_SECRET, { expiresIn: '1h' });
     if (!token) {
       console.log('Falha ao criar o token JWT');
-      return res.send({ success: false, message: 'Failed to create token' });
+      return res.status(500).json({ success: false, message: 'Failed to create token' });
     }
 
     res.cookie('token', token, { httpOnly: true });
     console.log('Login bem sucedido, token gerado:', token);
     
-    res.send({ success: true, username: user.usuario, role: user.acesso, token });
+    res.json({ success: true, username: user.usuario, role: user.acesso, token });
   });
 });
 
