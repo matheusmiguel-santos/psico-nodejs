@@ -121,21 +121,18 @@ app.post('/register', (req, res) => {
   });         
 });
 
-// Buscar um usuário específico pelo seu ID
-app.get('/users/:id', (req, res) => {
-  const { id } = req.params;
-  const query = 'SELECT * FROM cadastro_clientes WHERE id = ?';
-  db.query(query, [id], (err, results) => {
+// Buscar todos os usuários
+app.get('/users', (req, res) => {
+  const query = 'SELECT * FROM cadastro_clientes';
+  db.query(query, (err, results) => {
     if (err) {
       console.log(err);
       return res.send({ success: false, message: err.message });
     }
-    if (results.length === 0) {
-      return res.send({ success: false, message: 'User not found' });
-    }
-    res.send({ success: true, user: results[0] });
+    res.send({ success: true, users: results });
   });
 });
+
 
 // Atualizar um usuário
 app.put('/cadastro_clientes/:id', (req, res) => {
