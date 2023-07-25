@@ -122,7 +122,7 @@ app.post('/register', (req, res) => {
 });
 
 // Buscar um usuário específico pelo seu ID
-app.get('/users', (req, res) => {
+app.get('/users/:id', (req, res) => {
   const { id } = req.params;
   const query = 'SELECT * FROM cadastro_clientes WHERE id = ?';
   db.query(query, [id], (err, results) => {
