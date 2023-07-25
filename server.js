@@ -228,7 +228,13 @@ app.post('/login', (req, res) => {
   const query = 'SELECT * FROM login_register WHERE usuario = ?';
 
   db.query(query, [usuario], (err, results) => {
-    if (err || results.length === 0) {
+    if (err) {
+      console.log('Erro na consulta do banco de dados:', err);
+      return res.send({ success: false, message: 'User not found' });
+    }
+
+    if (results.length === 0) {
+      console.log('Nenhum usuário encontrado com o nome de usuário fornecido');
       return res.send({ success: false, message: 'User not found' });
     }
 
@@ -236,15 +242,23 @@ app.post('/login', (req, res) => {
 
     const isMatch = bcrypt.compareSync(senha, user.senha);
     if (!isMatch) {
+      console.log('Senha fornecida não corresponde à senha do usuário no banco de dados');
       return res.send({ success: false, message: 'Wrong password' });
     }
 
     const token = jwt.sign({ id: user.id, role: user.acesso }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    if (!token) {
+      console.log('Falha ao criar o token JWT');
+      return res.send({ success: false, message: 'Failed to create token' });
+    }
+
     res.cookie('token', token, { httpOnly: true });
+    console.log('Login bem sucedido, token gerado:', token);
     
     res.send({ success: true, username: user.usuario, role: user.acesso, token });
   });
 });
+
 
 app.post('/register_usuario', async (req, res) => {
   const { usuario, nome, email, senha, unidade, setor, acesso } = req.body;
