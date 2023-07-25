@@ -10,45 +10,39 @@ const mysql = require('mysql2');
 
 const app = express();
 
-const db = mysql.createPool({
-  host: '129.148.55.118',
-  user: 'QualityAdmin',
-  password: 'Suus0220##',
-  database: 'Psico-qslib',
-  connectionLimit: 10,
-});
+var db;
 
+function handleDisconnect() {
+  db = mysql.createPool({
+    host: '129.148.55.118',
+    user: 'QualityAdmin',
+    password: 'Suus0220##',
+    database: 'Psico-qslib',
+    connectionLimit: 10,
+  });
 
-db.getConnection((err, connection) => {
-  if (err) throw err;
-  console.log('Conectado ao banco de dados MySQL');
-
-  connection.query(
-    "CREATE TABLE IF NOT EXISTS cadastro_clientes (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), surname VARCHAR(255), email VARCHAR(255), birthDate DATE, gender VARCHAR(10), phone VARCHAR(20), phone2 VARCHAR(20), cpf VARCHAR(14), cnpj VARCHAR(18), registration VARCHAR(255), obs TEXT, address VARCHAR(255), number VARCHAR(10), complement VARCHAR(255), district VARCHAR(255), city VARCHAR(255), state VARCHAR(255), country VARCHAR(255), zipCode VARCHAR(10), unit VARCHAR(255), sector VARCHAR(255), role VARCHAR(255), institution VARCHAR(255), accessRecovery BOOLEAN, access VARCHAR(50))",
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        throw err;
-      }
-      console.log('Tabela "cadastro_clientes" verificada/criada');
+  db.getConnection(function(err, connection) {
+    if(err) {
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000);
     }
-  );
-
-  connection.query(
-    "CREATE TABLE IF NOT EXISTS login_register (id INT AUTO_INCREMENT PRIMARY KEY, usuario VARCHAR(255), senha VARCHAR(255), nome VARCHAR(255), email VARCHAR(255), unidade VARCHAR(255), setor VARCHAR(255), acesso VARCHAR(255))",
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        throw err;
-      }
-      console.log('Tabela "login_register" verificada/criada');
+    if (connection) connection.release();
+  });
+  
+  db.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      handleDisconnect();
+    } else {
+      throw err;
     }
-  );
-  connection.release();
-});
+  });
+}
+
+handleDisconnect();
 
 app.use(cors({
-  origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'], // adicionado o 'http://localhost:3000'
+  origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
