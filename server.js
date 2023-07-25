@@ -49,8 +49,12 @@ db.getConnection((err, connection) => {
   connection.release();
 });
 
+app.use(cors({
+  origin: 'https://psico-painel.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-app.use(cors());
 app.use(express.json());
 
 app.post('/register', (req, res) => {
@@ -229,7 +233,8 @@ app.delete('/users/:id', (req, res) => {
 app.post('/login', (req, res) => {
   const { usuario, senha } = req.body;
 
-  const query = 'SELECT * FROM cadastro WHERE usuario = ?';
+  const query = 'SELECT * FROM login_register WHERE usuario = ?';
+
   db.query(query, [usuario], (err, results) => {
     if (err || results.length === 0) {
       return res.send({ success: false, message: 'User not found' });
