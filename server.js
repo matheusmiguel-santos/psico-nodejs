@@ -16,7 +16,7 @@ const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: 'Psico-qslib',
+  database: process.env.DB_NAME,
   connectionLimit: 10,
 });
 
@@ -50,7 +50,7 @@ db.getConnection((err, connection) => {
 });
 
 app.use(cors({
-  origin: 'https://psico-painel.vercel.app',
+  origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'], // adicionado o 'http://localhost:3000'
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
