@@ -46,21 +46,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use((req, res, next) => {
-  // Se não há token na requisição, passe para a próxima rota
-  if (!req.headers.authorization) return next();
 
-  // Decodificar o token
-  const token = req.headers.authorization.split(' ')[1];
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = payload;
-  } catch (error) {
-    console.log('Error decoding JWT: ', error);
-  }
-
-  next();
-});
 app.use(express.json());
 
 app.post('/register', (req, res) => {
