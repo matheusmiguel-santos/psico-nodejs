@@ -15,10 +15,10 @@ var db;
 
 function handleDisconnect() {
   db = mysql.createPool({
-    host: '129.148.55.118',
-    user: 'QualityAdmin',
-    password: 'Suus0220##',
-    database: 'Psico-qslib',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     connectionLimit: 10,
   });
 
@@ -41,6 +41,7 @@ function handleDisconnect() {
 }
 
 handleDisconnect();
+
 
 app.use(cors({
   origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'],
@@ -325,11 +326,12 @@ app.use((req, res, next) => {
   // Decodificar o token
   const token = req.headers.authorization.split(' ')[1];
   try {
-    const payload = jwt.verify(token, 'suus02201998##');
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.user = payload;
   } catch (error) {
     console.log('Error decoding JWT: ', error);
   }
+  
 
   next();
 });
