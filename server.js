@@ -1,5 +1,9 @@
 require('dotenv').config();
-console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
+console.log('DB Host:', process.env.DB_HOST);
+console.log('DB User:', process.env.DB_USER);
+console.log('DB Password:', process.env.DB_PASSWORD);
+console.log('DB Name:', process.env.DB_NAME);
+
 
 const express = require('express');
 const cors = require('cors');
@@ -43,11 +47,8 @@ function handleDisconnect() {
 handleDisconnect();
 
 
-app.use(cors({
-  origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
+
 
 app.use(express.json());
 
