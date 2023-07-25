@@ -1,11 +1,13 @@
 require('dotenv').config();
-console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME, process.env.JWT_SECRET);
+console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
 
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2');
+const secret = process.env.JWT_SECRET;
+
 
 const app = express();
 
@@ -13,10 +15,10 @@ var db;
 
 function handleDisconnect() {
   db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: '129.148.55.118',
+    user: 'QualityAdmin',
+    password: 'Suus0220##',
+    database: 'Psico-qslib',
     connectionLimit: 10,
   });
 
@@ -39,7 +41,6 @@ function handleDisconnect() {
 }
 
 handleDisconnect();
-
 
 app.use(cors({
   origin: ['https://psico-painel.vercel.app', 'http://localhost:3000'],
