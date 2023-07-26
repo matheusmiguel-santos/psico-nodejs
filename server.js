@@ -134,8 +134,8 @@ app.get('/users', (req, res) => {
 });
 
 // Contagem de todos os usuários
-app.get('/users/count', (req, res) => {
-  const query = 'SELECT COUNT(*) AS count FROM cadastro_clientes';
+app.get('/usercount', (req, res) => {
+  const query = 'SELECT COUNT(id) AS count FROM cadastro_clientes';
   db.query(query, (err, results) => {
     if (err) {
       console.log(err);
