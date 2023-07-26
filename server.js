@@ -133,6 +133,17 @@ app.get('/users', (req, res) => {
   });
 });
 
+// Contagem de todos os usuários
+app.get('/users/count', (req, res) => {
+  const query = 'SELECT COUNT(*) AS count FROM cadastro_clientes';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.send({ success: false, message: err.message });
+    }
+    res.send({ success: true, count: results[0].count });
+  });
+});
 
 // Atualizar um usuário
 app.put('/cadastro_clientes/:id', (req, res) => {
