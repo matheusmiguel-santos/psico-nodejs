@@ -133,6 +133,20 @@ app.get('/users', (req, res) => {
   });
 });
 
+// Buscar usuários pela instituição
+app.get('/usersByInstitution/:institution', (req, res) => {
+  const { institution } = req.params;
+  const query = 'SELECT * FROM cadastro_clientes WHERE institution = ?';
+  db.query(query, [institution], (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.send({ success: false, message: err.message });
+    }
+    res.send({ success: true, users: results });
+  });
+});
+
+
 // Contagem de todos os usuários
 app.get('/usercount', (req, res) => {
   const query = 'SELECT COUNT(id) AS count FROM cadastro_clientes';
